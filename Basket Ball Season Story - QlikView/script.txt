@@ -1,0 +1,102 @@
+LOAD coachid, 
+     year, 
+     yr_order, 
+     firstname as c_fname, 
+     lastname as c_lname, 
+     season_win, 
+     season_loss, 
+     playoff_win, 
+     playoff_loss, 
+     team
+FROM
+[D:\Spring 2017\HPA\Assignment 3\coaches_season.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+
+LOAD ilkid, 
+     firstname as pl_firstname, 
+     lastname as pl_lastname, 
+     League as League_Name, 
+     gp, 
+     minutes, 
+     pts, 
+     oreb, 
+     dreb, 
+     reb, 
+     asts, 
+     stl, 
+     blk, 
+     turnover, 
+     pf, 
+     fga, 
+     fgm, 
+     fta, 
+     ftm, 
+     tpa, 
+     tpm
+FROM
+[D:\Spring 2017\HPA\Assignment 3\player_regular_season_career.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+
+LOAD ilkid, 
+     firstname as pl_fname, 
+     lastname as pl_lname, 
+     position, 
+     firstseason, 
+     lastseason, 
+     h_feet, 
+     h_inches, 
+     weight, 
+     college, 
+     birthdate
+FROM
+[D:\Spring 2017\HPA\Assignment 3\players.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+
+LOAD team, 
+     year as season_year, 
+     League, 
+     o_fgm, 
+     o_fga, 
+     o_ftm, 
+     o_fta, 
+     o_oreb, 
+     o_dreb, 
+     o_reb, 
+     o_asts, 
+     o_pf, 
+     o_stl, 
+     o_to, 
+     o_blk, 
+     o_3pm, 
+     o_3pa, 
+     o_pts, 
+     d_fgm, 
+     d_fga, 
+     d_ftm, 
+     d_fta, 
+     d_oreb, 
+     d_dreb, 
+     d_reb, 
+     d_asts, 
+     d_pf, 
+     d_stl, 
+     d_to, 
+     d_blk, 
+     d_3pm, 
+     d_3pa, 
+     d_pts, 
+     pace, 
+     won, 
+     lost
+FROM
+[D:\Spring 2017\HPA\Assignment 3\team_season.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+
+LOAD team , 
+     City, 
+     Team_Name, 
+     League as League_Name
+FROM
+[D:\Spring 2017\HPA\Assignment 3\teams.csv]
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+
