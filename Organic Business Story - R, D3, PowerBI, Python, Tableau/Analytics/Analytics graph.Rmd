@@ -1,0 +1,62 @@
+
+
+
+
+
+```{r}
+library(ggplot2)
+statista <- read.csv('oraganic_sales_and_consumption.csv', row.names=1)
+head(statista)
+plot(statista)
+
+x <- statista$Time_Frame
+y <- statista$Sales_in_billion_US_dollars
+n <- statista$Number_of_people_in_millions
+df <- data.frame(x,y,n)
+
+z <- lm(y~x, data = df)
+k <- lm(n~x, data = df)
+
+new_x <- seq(from=2016,to=2025,by=1)
+new_y <- (z$coefficients[2] * new_x)+z$coefficients[1] # Using slope/coefficient from OLS model, calculate our new y
+new_n <- (k$coefficients[2] * new_x)+k$coefficients[1]
+new_df <- data.frame(new_x, new_y, new_n) # create data frame so we can use the new data with ggplot
+
+
+pointsX <- c(2010)
+pointsNewX2018 <- c(2018)
+pointsNewX2025 <- c(2025)
+
+p <- ggplot() 
+p + geom_line(data = df, aes(x = x, y = y,color = "#CC79A7"),size=1) +
+    geom_line(data = new_df, aes(x = new_x, y = new_y,color = "darkblue2"),size=1, linetype = 2) + 
+    geom_line(data = df, aes(x = x, y = n,color ="green"),size=1) +
+    geom_line(data = new_df, aes(x = new_x, y = new_n,color = "#D55E00"),size=1,linetype = 2) +
+    scale_color_discrete(name = "Lines", labels = c("2010-2016 Sales", "2017-2025 Consumption","2017-2025 Sales","2010-2016 Consumption"))+
+    geom_point(data = df, aes(x = x, y = y),size=2,color = "darkblue") + 
+    geom_point(data = new_df, aes(x = new_x, y = new_y),size=2,color ="darkblue") +
+    geom_point(data = df, aes(x = x, y = n),size=2,color ="darkblue") +
+    geom_point(data = new_df, aes(x = new_x, y = new_n),size=2,color ="darkblue") + 
+    scale_x_continuous(breaks = seq(2010,2025,1), minor_breaks = 0.1) +
+    scale_y_continuous(breaks=seq(0,80,5),minor_breaks = 0.1, sec.axis = sec_axis(~.,breaks =seq(0,80,5),name = "Number Of Consumers (in millions)"))+
+    labs(y = "Sales (in billion USD)",x = "Year") + 
+    theme(axis.line = element_line(colour = "darkblue",size = 1, linetype = "solid")) +
+    theme(axis.text.x = element_text(color="darkblue",angle = 90,vjust = 0),
+    axis.text.y = element_text(color="darkblue"))+
+    theme(panel.background = element_rect(fill = "lightyellow",colour = "lightyellow",size = 0.5, linetype = "solid"),
+    panel.grid.major = element_line(size = 0.5, linetype = 'solid',colour = "grey"), 
+    panel.grid.minor = element_line(size = 0.25, linetype = 'solid',colour = "grey"))+
+    geom_text(x= 2020,y=65,angle = 23, label = "Projected 
+              Consumption",aes(fill = "red"), colour = "darkgreen", fontface = "bold")+
+    geom_text(x= 2021.5,y=55,angle = 40, label = "Projected 
+              Sales",aes(fill = "red"), colour = "turquoise4", fontface = "bold")+
+    annotate("text", label = "Organic Sales and Consumption", x = 2014, y = 79, size = 4, colour = "darkblue",fontface = "bold")+
+    annotate("text", label = "Historic Vs Predicted", x = 2014, y = 76, size = 4, colour = "darkblue",fontface = "bold")+ 
+    geom_text(aes(x, y, label = round(y,2)), data = df[df$x %in% pointsX,], nudge_x = 0.07, nudge_y = 3, color = "darkblue",fontface = "bold")+ 
+    geom_text(aes(x, n, label = round(n,2)), data = df[df$x %in% pointsX,], nudge_x = 0.07, nudge_y = 2.5, color = "darkblue",fontface = "bold")+ 
+    geom_text(aes(new_x, new_y, label = round(new_y,2)), data = new_df[new_df$new_x %in% pointsNewX2018,], nudge_x = 0.3, nudge_y = -2.25, color =         "darkblue",fontface = "bold")+ 
+    geom_text(aes(new_x, new_n, label = round(new_n,2)), data = new_df[new_df$new_x %in% pointsNewX2018,], nudge_x = -0.1, nudge_y = 2.5, color =          "darkblue",fontface = "bold")+
+    geom_text(aes(new_x, new_y, label = round(new_y,2)), data = new_df[new_df$new_x %in% pointsNewX2025,], nudge_x = -0.10, nudge_y = 2.5, color =          "darkblue",fontface = "bold")+ 
+    geom_text(aes(new_x, new_n, label = round(new_n,2)), data = new_df[new_df$new_x %in% pointsNewX2025,], nudge_x = -0.05, nudge_y = -2.5, color =         "darkblue",fontface = "bold")
+```
+
