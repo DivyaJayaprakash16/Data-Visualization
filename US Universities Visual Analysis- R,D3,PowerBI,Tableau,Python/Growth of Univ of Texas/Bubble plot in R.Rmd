@@ -1,0 +1,56 @@
+---
+title: "Group 10 Assignment 2"
+output: html_document
+---
+
+```{r read data}
+library(dplyr)     # To join data frames, create subsets, and clean (wrangle)
+library(readxl)    # To read Excel data into R
+library(ggplot2)
+library(dplyr)  # to group categories for bar charts
+
+
+School_Data <- read_excel("IPEDS_data.xlsx", sheet = 1, col_names = TRUE) 
+
+```
+
+
+
+
+```{r Assignment 2 - Bubbleplot}
+School_Data_bub <- filter (School_Data, Profile == "Aspire" | Name == "The University of Texas at Dallas")
+names(School_Data_bub) <- gsub(" ", "_", names(School_Data_bub))    #replaceing all spaces with a _
+names(School_Data_bub) <- gsub("-", "_", names(School_Data_bub))    #replaceing all - with a _
+names(School_Data_bub) <- gsub("'", "", names(School_Data_bub))    #replaceing all ' with nothing
+names(School_Data_bub) <- gsub(",", "", names(School_Data_bub))    #replaceing all , with nothing
+
+
+School_Data_bub.p <- ggplot(data = School_Data_bub, 
+                            aes(x = Part_time_undergraduate_enrollment, 
+                             y = Graduation_rate___Bachelor_degree_within_5_years_total, 
+                             size = Full_time_undergraduate_enrollment))
+
+School_Data_bub.p + geom_point(shape = 21, 
+                               color = "black", 
+                               stroke = 1.5, 
+                               fill = "skyblue", 
+                               alpha = 3/4) + 
+  theme(legend.position = "none") +
+	geom_smooth(method = "lm", se = FALSE, color = "coral2", show.legend = F) + 
+  coord_cartesian(ylim = c(55, 95)) + 
+  scale_size_continuous(range = c(5, 10)) + 
+  geom_text(aes(label=ifelse(Name == "The University of Texas at Dallas", 
+                             as.character(Name),'')),
+            hjust=.5, 
+            vjust=-1, 
+            size = 4) +
+  labs(title="Downward Trend in Bachelor Degree Graduation Rate Within 5 Years",
+       x= "Part Time Undergraduate Enrollment
+
+    Bubble Size: Full Time Undergraduate Enrollment",
+       y = "Graduation Rate in Percent")
+
+
+```
+
+

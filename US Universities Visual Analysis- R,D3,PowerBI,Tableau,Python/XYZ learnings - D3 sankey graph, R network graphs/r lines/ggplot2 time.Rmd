@@ -1,0 +1,16 @@
+---
+title: "ggplot time hw"
+output: html_document
+---
+
+Problem 1) Using the rwunderground package (you will need to request an api key per the instructions in the lecture), display a graph as provided in the PowerPoint showing the difference between the high and low temperatures for Dallas, Texas for each day (note: the actual dates can vary since the forecast of ten days varies by when the homework is completed).
+```{r dates with weather via API}
+
+
+```
+
+Problem 2) We will project the stock prices for AT&T (T symbol) and Toyota (TM symbol) via the quantmod package (using the same function as in the lecture). Read stock data for AT&T and Toyota for dates from January 1 to September 30 2017. Create a plot using ggplot identical to the graph provided in the PowerPoint, with AT&T Graph the AT&T and Toyota open prices over the data ranges of January 1 2017 to December 31 2020. Using smooth geoms with a regular linear model, project the prices through the entire date range of the graph.
+```{r stock data and exponential growth}
+
+
+```

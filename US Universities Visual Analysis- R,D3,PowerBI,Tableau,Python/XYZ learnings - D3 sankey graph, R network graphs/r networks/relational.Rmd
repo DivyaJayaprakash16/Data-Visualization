@@ -1,0 +1,10 @@
+---
+title: "relational graphs hw"
+output: html_document
+---
+
+We will use the cities network data as provided via https://networkdata.ics.uci.edu/netdata/html/cities.html. Read the cities network into R via the provided Rdata file. Then recreate the graph provided in the PPT. Set a seed to 1 before creating the graph to recreate the graph exactly.
+```{r problem 1}
+
+
+```

@@ -1,0 +1,32 @@
+---
+title: "ggplot spatial"
+output: html_document
+---
+
+
+```{r maps}
+library(ggplot2)
+library(maps)
+summary(USArrests)
+
+
+vcdExtra::datasets("maps") # these 'datasets' support the creation of sets through references including county, france, italy, nz, state, usa, world, and world2 
+
+usa <- map_data("usa") # map_data is ggplot2 function converting data from maps package to data frame
+
+states <- map_data("state") 
+
+
+```
+
+
+```{r maps and data}
+
+head(USArrests) # data set in maps package
+crimes <- data.frame(state = tolower(rownames(USArrests)), USArrests) # Change row lables to data for use in map parameter of geom_map
+ggplot(crimes, aes(map_id = state)) +
+    geom_map(aes(fill = UrbanPop), map = states) + # map parameter receives coordinates
+    expand_limits(x = states$long, y = states$lat) 
+
+```
+

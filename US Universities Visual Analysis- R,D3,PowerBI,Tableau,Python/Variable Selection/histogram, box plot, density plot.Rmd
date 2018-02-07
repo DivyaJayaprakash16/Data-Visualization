@@ -1,0 +1,118 @@
+---
+title: "Group 10 Assignment 1"
+output: html_document
+---
+
+```{r read data}
+library(dplyr)     # To join data frames, create subsets, and clean (wrangle)
+library(readxl)    # To read Excel data into R
+library(ggplot2)
+library(dplyr)  # to group categories for bar charts
+
+
+School_Data <- read_excel("IPEDS_data.xlsx", sheet = 1, col_names = TRUE) 
+
+#May have to run this twice for it to work!!!!!!
+
+```
+
+
+
+## Barchart
+```{r Assignment 1 - Bar Chart}
+
+School_Data_bar <- filter (School_Data, Profile == "Aspire" | Name == "The University of Texas at Dallas")
+names(School_Data_bar) <- gsub(" ", "_", names(School_Data_bar))    #replaceing all spaces with a _
+names(School_Data_bar) <- gsub("-", "_", names(School_Data_bar))    #replaceing all - with a _
+names(School_Data_bar) <- gsub("'", "", names(School_Data_bar))    #replaceing all ' with nothing
+School_Data_bar.p <- ggplot(School_Data_bar)
+School_Data_bar.p + geom_bar(stat = 'identity', aes(x = Name, y = Percent_of_freshmen_receiving_institutional_grant_aid, fill = Name)) +
+  labs(title="Freshman Receiving Institutional Grant Aid",
+       x= "Universities",
+       y = "Percent of Freshman Receiving Institutional Grant Aid") + 
+  scale_fill_manual(values=c("blue", "blue", "blue", "red", "orange", "blue", "blue", "blue", "blue", "blue", "blue", "blue")) + theme(axis.text.x = element_text(angle = 90, hjust=0), legend.position = "none") + coord_cartesian(ylim = c(20, 80))
+
+
+ggsave("R Bar Chart.png")
+
+```
+
+
+
+
+## Box Plot
+```{r Assignment 1 - Box Plot}
+
+School_Data_box <- filter (School_Data, Profile == "Aspire" | Profile == "Peer")
+names(School_Data_box) <- gsub(" ", "_", names(School_Data_box))    #replaceing all spaces with a _
+names(School_Data_box) <- gsub("-", "_", names(School_Data_box))    #replaceing all - with a _
+names(School_Data_box) <- gsub("'", "", names(School_Data_box))     #replaceing all ' with nothing
+School_Data_box.p <- ggplot(School_Data_box)
+School_Data_box.p + geom_boxplot(aes(x = Profile, y = Full_time_enrollment, fill = Profile)) +
+  labs(title="Full Time Enrollment",
+       x= "Profile",
+       y = "Number of Students Enrolled Full Time")
+
+ggsave("R Box Plot.png")
+
+
+```
+
+
+
+
+
+
+## Histogram
+```{r Assignment 1 - Histogram}
+#Applying Filter condition for profile =Aspire
+FilteredData <- subset(School_Data, School_Data$Profile=="Aspire" | School_Data$Name =="The University of Texas at Dallas")
+
+#Plotting a histogram using GGPlot2
+ggplot(FilteredData,aes(x = FilteredData$`Doctor's degrees - professional practice awarded` ,
+                        color =Name, 
+                        fill = Count))+
+  geom_histogram(binwidth = 200,
+                 col = "white",
+                 aes(fill= ..count..),
+                 closed="left",
+                 alpha= 0.9,
+                 position="identity",
+                 show.legend = TRUE) +
+  labs(title="Doctors Degree Awarded to Students",
+       x= "Number of Doctors Degrees - Professional practice awarded",
+       y = "Count of Universities" ) +
+  scale_x_continuous(breaks = seq(0, 1100, 200)) +
+  theme(legend.position="top")+
+  coord_cartesian(xlim = c(0, 1100))
+
+#Data is filtered for universitites with Aspire profile or with Name = The University of texas at Dallas
+#The University of Texas at Dallas appears in the first bin
+
+
+ggsave("R Histogram.png")
+
+
+```
+
+
+
+
+
+## Density
+
+```{r Assignment 1 - Density}
+
+School_Data_Dens <- filter (School_Data)
+names(School_Data_Dens) <- gsub(" ", "_", names(School_Data_Dens))    #replaceing all spaces with a _
+names(School_Data_Dens) <- gsub("-", "_", names(School_Data_Dens))    #replaceing all - with a _
+names(School_Data_Dens) <- gsub("'", "", names(School_Data_Dens))     #replaceing all ' with nothing
+School_Data_Dens.p <- ggplot(School_Data_Dens)
+School_Data_Dens.p + geom_density(aes(x = Percent_of_total_enrollment_that_are_Nonresident_Alien, group = Profile, fill = Profile), adjust = 2, alpha=0.3) +
+  labs(title="Percent of total enrollment that are Nonresident Alien",
+       x= "Percent")
+
+ggsave("R Density.png")
+
+```
+

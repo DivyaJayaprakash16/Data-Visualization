@@ -1,0 +1,113 @@
+---
+title: "ggplot time hw"
+output: html_document
+---
+
+
+```{r libraries and functions}
+library(ggplot2)
+library(rwunderground) 
+# api for weather data, obtain API from https://www.wunderground.com/weather/api/d/pricing.html
+# use Anvil Plan as developer (register as new member); use set_api_key and forecast10day
+# also use devtools::install_github("ALShum/rwunderground") see https://github.com/alshum/rwunderground
+library(lubridate)     # tidyverse package for date manipulation (using function mdy)
+library(quantmod)      # includes zoo (masks as.Date from base R), xts; used for getSymbols 
+library(scales)        # For axis date formatting via labels
+library(broom)         # use function tidy to create data frame from lists
+library(tidyr)         # tidyverse package for data frame/tibble manipulation (using function spread)
+library(dplyr)         # Used for filter
+library(blscrapeR)     # retrieve Bureau of Labors stats via bls_api function
+
+# Custom function used to format axes labels with degree sign for temperatures
+add_degree <- function(x) {
+  paste(x, " degrees",sep = "")
+} 
+
+# key for API call to weather underground via the rwunderground package. Can set the api key in the call, in advance via "set_api_key" or set in .Renviron file by adding WUNDERGROUNDID = "api key"
+set_api_key("d29f1ed9ec678880")
+
+```
+
+
+
+Problem 1) Using the rwunderground package (you will need to request an api key per the instructions in the lecture), display a graph as provided in the PowerPoint showing the difference between the high and low temperatures for Dallas, Texas for each day (note: the actual dates can vary since the forecast of ten days varies by when the homework is completed).
+```{r dates with weather via API}
+
+ten_day_DFW_forecast = forecast10day(set_location(territory = "Texas", city = "Dallas"))
+
+forecast.p <- ggplot(ten_day_DFW_forecast, aes(x = date))
+forecast.p  + 
+  geom_line(aes(y = temp_high), color = 'coral1') + 
+  geom_line(aes(y = temp_low), color = 'cyan1') +
+  scale_y_continuous(name = 'Temperatures', labels = add_degree) + 
+  theme(axis.text.y=element_text(angle = 45, hjust=1)) + # call custom function to add degree symbol
+  
+  scale_x_datetime(name = 'Dates', labels = date_format("%b/%d/%y")) + 
+  theme(axis.text.x=element_text(angle = 270, hjust=0))  
+# Rotate x axis labels to avoid overlap
+# Date formatting legend
+#   %B = month name
+#   %Y = four digit year
+#   %m = month #
+#   %y = two digit year
+#  %b = abbreviated month name
+
+```
+
+Problem 2) We will project the stock prices for AT&T (T symbol) and Toyota (TM symbol) via the quantmod package (using the same function as in the lecture). Read stock data for AT&T and Toyota for dates from January 1 to September 30 2017. Create a plot using ggplot identical to the graph provided in the PowerPoint, with AT&T Graph the AT&T and Toyota open prices over the data ranges of January 1 2017 to December 31 2020. Using smooth geoms with a regular linear model, project the prices through the entire date range of the graph.
+```{r stock data and exponential growth}
+
+
+stock_data <- getSymbols(c("T","TM"),src='yahoo', from = "2017-01-01", to = "2017-09-30")
+#head(stock_data)
+#str(T) # xts object
+#str(TM) # xts object
+
+# quantmod creates xts object for each symbol provided
+ATT_Stock <- fortify(T) # fortify ggplot2 function that converts xts to usable data frame (old solution)
+#head(ATT_Stock)
+
+# quantmod creates xts object for each symbol provided
+Toyota_Stock <- fortify(TM) # fortify ggplot2 function that converts xts to usable data frame (old solution)
+#head(Toyota_Stock)
+
+
+ggplot() + 
+  geom_line(data = Toyota_Stock, aes(x = Index, y = TM.Open), color = 'coral1') +
+  geom_smooth(data = Toyota_Stock, aes(x = Index,y = TM.Open), color = "coral1", method = "lm", fullrange = TRUE) + 
+  geom_line(data = ATT_Stock, aes(x = Index, y = T.Open), color = 'cyan1') +
+  geom_smooth(data = ATT_Stock, aes(x = Index, y = T.Open), color = "coral1", method = "lm", fullrange = TRUE) +
+  scale_x_date(name = "Dates", limits = c(as.Date("2017-01-01"), as.Date("2020-12-31"))) + 
+  scale_y_continuous(name = "Open", labels = comma, limits = c(10,125))
+
+ggsave("stock data going till sep 30.png")
+
+
+################################################################################################
+
+stock_data <- getSymbols(c("T","TM"),src='yahoo', from = "2017-01-01", to = "2017-10-09")
+#head(stock_data)
+#str(T) # xts object
+#str(TM) # xts object
+
+# quantmod creates xts object for each symbol provided
+ATT_Stock <- fortify(T) # fortify ggplot2 function that converts xts to usable data frame (old solution)
+#head(ATT_Stock)
+
+# quantmod creates xts object for each symbol provided
+Toyota_Stock <- fortify(TM) # fortify ggplot2 function that converts xts to usable data frame (old solution)
+#head(Toyota_Stock)
+
+
+
+ggplot() + 
+  geom_line(data = Toyota_Stock, aes(x = Index, y = TM.Open), color = 'coral1') +
+  geom_smooth(data = Toyota_Stock, aes(x = Index,y = TM.Open), color = "coral1", method = "lm", fullrange = TRUE) + 
+  geom_line(data = ATT_Stock, aes(x = Index, y = T.Open), color = 'cyan1') +
+  geom_smooth(data = ATT_Stock, aes(x = Index, y = T.Open), color = "coral1", method = "lm", fullrange = TRUE) +
+  scale_x_date(name = "Dates", limits = c(as.Date("2017-01-01"), as.Date("2020-12-31"))) + 
+  scale_y_continuous(name = "Open", labels = comma, limits = c(10,125))
+
+ggsave("stock data going till oct 10.png")
+
+```

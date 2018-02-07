@@ -1,0 +1,55 @@
+---
+title: "Visualizing data in R, Lattice"
+output: html_document
+---
+
+
+
+```{r prep}
+library(lattice)
+summary(barley)
+
+```
+
+
+https://stat.ethz.ch/R-manual/R-devel/library/lattice/html/Lattice.html
+
+https://www.statmethods.net/advgraphs/trellis.html
+
+
+- Univariate:
+    qqmath() - theoretical quantile plot
+    stripplot()
+    bwplot() - box and whiskers
+
+
+- Bivariate
+    qq() - quantile plot
+
+
+- Trivariate
+    levelplot()
+    contourplot()
+    wireframe() - 3d perspective plot
+
+
+- Hypervariate
+    splom() - scatter-plot matrix
+    parallel()
+
+
+
+```{r barley}
+summary(barley)
+
+library(lattice)
+
+
+levelplot(barley$yield~barley$year*barley$site|barley$variety, barley, colorkey=TRUE, drape=TRUE, groups = NULL, xlab = "Year", ylab = "Site")
+
+
+```
+
+
+
+

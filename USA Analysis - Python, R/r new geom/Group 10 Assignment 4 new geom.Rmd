@@ -1,0 +1,63 @@
+---
+title: ""
+output: html_document
+---
+
+
+
+```{r prep}
+library(ggplot2)
+library(readxl)  
+
+
+data <- read_excel("IPEDS_data.xlsx", sheet = 1, col_names = TRUE)
+
+
+names(data) <- gsub(" ", "_", names(data))    #replaceing all spaces with a _
+names(data) <- gsub("-", "_", names(data))    #replaceing all - with a _
+names(data) <- gsub("'", "", names(data))    #replaceing all ' with nothing
+names(data) <- gsub(",", "", names(data))    #replaceing all , with nothing
+
+
+head(data)
+
+
+```
+
+
+
+
+http://ggplot2.tidyverse.org/reference/geom_hex.html
+
+```{r new geom}
+
+d <- ggplot(data, aes(Graduate_enrollment, Undergraduate_enrollment))
+
+d + geom_hex(bins = 20, color = "black") +
+	geom_smooth(method = "lm", se = FALSE, color = "orange", show.legend = F) + 
+  geom_point(data = data[data$Name == "The University of Texas at Dallas",],
+            shape = 21, 
+            color = "black", 
+            stroke = 1.5, 
+            fill = "coral2", 
+            alpha = 3/4,
+            size = 3) +
+  labs(title="Graduate vs Undergraduate Enrollment with Geom_Hex",
+            x= "Graduate Enrollment",
+            y = "Undergraduate Enrollment") +
+  scale_fill_gradient(low = "light blue", high = "red") +
+  
+  coord_cartesian(xlim = c(0, 25000), ylim = c(0, 50000)) + 
+  
+  annotate("text", label = "The University of Texas at Dallas has a", x = 17000, y = 2500, size = 4, color = "red") +
+  annotate("text", label = "slightly higher amount of grad students comparatively", x = 17000, y = 600, size = 4, color = "red") +
+  annotate("rect", xmin = 500, xmax = 8000, ymin = 16000, ymax = 30000, alpha = .2, color = 'coral2', fill = 'coral1') + 
+  annotate("segment", x = 8350, xend = 10500, y = 12500, yend = 2500, color = "coral2", size = 2) +
+  annotate("segment", x = 4500, xend = 4500, y = 30000, yend = 41500, color = "coral2", size = 1) +
+  annotate("text", label = "Most colleges have a high ratio of", x = 5800, y = 45000, size = 4, color = "red") +
+  annotate("text", label = "undergrad vs graduate students", x = 5800, y = 42500, size = 4, color = "red") 
+
+
+
+```
+
